@@ -16,6 +16,16 @@ const router = createRouter({
             // this generates a separate chunk (About.[hash].js) for this route
             // which is lazy-loaded when the route is visited.
             component: () => import("../views/AboutView.vue")
+        },
+        {
+            path: "/branches",
+            name: "branches",
+            component: () => import("@/views/BranchView.vue")
+        },
+        {
+            path: "/azure",
+            name: "azure",
+            component: () => import("@/views/AzureView.vue")
         }
     ],
     linkActiveClass: "active"

@@ -11,7 +11,9 @@ import SiteFooter from "./components/SiteFooter.vue";
 
     <main class="flex-shrink-0">
         <div class="container">
-            <RouterView />
+            <Suspense>
+                <RouterView />
+            </Suspense>
         </div>
     </main>
 

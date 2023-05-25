@@ -1,5 +1,5 @@
 <script setup lang="ts"></script>
 
 <template>
-    <div>Home page</div>
+    <div>Branches go here</div>
 </template>
