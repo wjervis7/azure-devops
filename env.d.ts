@@ -1,2 +1,2 @@
 /// <reference types="vite/client" />
-/// <reference path="src/utilities/azure.d.ts" />
+/// <reference path="src/types/azure.d.ts" />
