@@ -1,8 +1,12 @@
 <!-- eslint-disable vue/require-v-for-key -->
 <script setup lang="ts" generic="TRow">
+//import { RouterLink } from 'vue-router';
 export interface Header {
     heading: string;
-    dataProperty: string;
+    dataProperty?: string;
+    formatFunc?(row: any): string;
+    linkTo?(row: any): string;
+    linkText?(row: any): string;
 }
 
 defineProps<{
@@ -30,7 +34,17 @@ const getRowDataForHeader = (row: any, header: string): string | number | boolea
         </thead>
         <tbody>
             <tr v-for="(row, i) in rows" v-bind:key="i">
-                <td v-for="(header, j) in headers" v-bind:key="`${i}-${j}`">{{ getRowDataForHeader(row, header.dataProperty) }}</td>
+                <td v-for="(header, j) in headers" v-bind:key="`${i}-${j}`">
+                    <template v-if="header.linkTo">
+                        <a :href="header.linkTo(row)">{{ header.linkText!(row) }}</a>
+                    </template>
+                    <template v-else-if="header.formatFunc">
+                        {{ header.formatFunc(row) }}
+                    </template>
+                    <template v-else>
+                        {{ getRowDataForHeader(row, header.dataProperty!) }}
+                    </template>
+                </td>
             </tr>
         </tbody>
     </table>

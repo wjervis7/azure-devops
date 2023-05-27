@@ -21,3 +21,16 @@ main > .container {
         white-space: nowrap;
     }
 }
+
+a[target="_blank"]::after {
+    font-family: "bootstrap-icons";
+    font-size: 0.625rem;
+    content: "\F1C5";
+    display: inline-block;
+    padding-left: 0.225rem;
+    vertical-align: super;
+}
+
+.text-muted .btn-sm {
+    vertical-align: baseline;
+}

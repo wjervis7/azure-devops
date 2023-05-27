@@ -37,7 +37,7 @@ const updateValue = (event: Event) => {
 </script>
 
 <template>
-    <input class="form-control" :list="`${input}Options`" :id="input" :placeholder="placeholderText" :value="modelValue" @input="updateValue" :disabled="disableText" />
+    <input v-bind="$attrs" class="form-control" :list="`${input}Options`" :id="input" :placeholder="placeholderText" :value="modelValue" @input="updateValue" :disabled="disableText" />
     <datalist :id="`${input}Options`">
         <option v-for="option in options" :value="option" v-bind:key="option"></option>
     </datalist>

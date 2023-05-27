@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { Tooltip } from "bootstrap";
+import { DateTime } from "luxon";
 import { azureStore } from "@/stores/azure";
-import { get, requiredScopes } from "@/utilities/azure";
+import azure, { requiredScopes } from "@/utilities/azure";
 import BsLabel from "@/components/BsLabel.vue";
 import BsInput from "@/components/BsInput.vue";
 import BsDatalist from "@/components/BsDatalist.vue";
 import BsModal from "@/components/BsModal.vue";
 import BsModalButton from "@/components/BsModalButton.vue";
+import BsToastsContainer from "@/components/BsToastsContainer.vue";
+import { type ToastProps } from "@/components/BsToast.vue";
 
 const store = azureStore();
 
@@ -17,8 +20,7 @@ const project = ref(store.project);
 const repo = ref(store.repo);
 
 const newPatUrl = computed(() => `https://dev.azure.com/${org.value || "{org}"}/_usersSettings/tokens`);
-const projectsEndpoint = computed(() => `https://dev.azure.com/${org.value}/_apis/projects?api-version=7.1-preview.4`);
-const reposEndpoint = computed(() => `https://dev.azure.com/${org.value}/${project.value}/_apis/git/repositories?api-version=7.1-preview.1`);
+const newPatText = computed(() => (org.value ? "" : "(replace {org} with your organization.)"));
 
 const projects = ref<string[]>([]);
 const repos = ref<string[]>([]);
@@ -31,7 +33,7 @@ const updateProjects = async () => {
         return;
     }
 
-    const azureProjects = await get<Azure.Project[]>(projectsEndpoint.value, pat.value);
+    const azureProjects = await azure.getProjects(org.value, pat.value);
     projects.value = azureProjects.map((p) => p.name);
 };
 
@@ -40,7 +42,7 @@ const updateRepos = async () => {
         return;
     }
 
-    const azureRepos = await get<Azure.Repo[]>(reposEndpoint.value, pat.value);
+    const azureRepos = await azure.getRepositories(org.value, project.value, pat.value);
     repos.value = azureRepos.map((r) => r.name);
 };
 
@@ -53,12 +55,24 @@ const clearValues = () => {
     pat.value = "";
     project.value = "";
     repo.value = "";
+    toasts.value.push({
+        time: DateTime.now(),
+        title: "Values Cleared!",
+        autohide: false
+    });
 };
+const toasts = ref<ToastProps[]>([]);
+
 const saveValues = () => {
     store.org = org.value;
     store.pat = pat.value;
     store.project = project.value;
     store.repo = repo.value;
+    toasts.value.push({
+        time: DateTime.now(),
+        title: "Values Saved!",
+        autohide: false
+    });
 };
 
 const projectReloadRef = ref(null);
@@ -83,12 +97,12 @@ onMounted(() => {
         <div class="col-12">
             <BsLabel input="pat">Personal Access Token</BsLabel>
             <BsInput input="pat" v-model="pat" required>
-                <template v-slot:description> Enter your personal access token. Click <BsModalButton target="#pat-help">here </BsModalButton> for help on generating a token. </template>
+                <template v-slot:description> Enter your personal access token. Click <BsModalButton class="btn-sm" target="#pat-help">here</BsModalButton> for help on generating a token. </template>
                 <template v-slot:validation> Personal Access Token is required. </template>
             </BsInput>
             <BsModal title="Obtain a Personal Access Token" id="pat-help">
                 To generate a personal access token, go to <a target="_blank" :href="newPatUrl">{{ newPatUrl }}</a
-                >, and click on <strong>New Token</strong> {{ newPatUrl.indexOf(org) > 0 ? "" : "(Replace {org} with your organization)" }}.
+                >, and click on <strong>New Token</strong> {{ newPatText }}.
                 <br />
                 Select the following scopes:
                 <ul>
@@ -129,6 +143,7 @@ onMounted(() => {
             <button type="button" class="btn btn-destructive" @click="clearValues">Clear Values</button>
             <button type="button" class="btn btn-primary" @click="saveValues">Save Values</button>
         </div>
+        <BsToastsContainer :toasts="toasts"></BsToastsContainer>
     </div>
 </template>
 
