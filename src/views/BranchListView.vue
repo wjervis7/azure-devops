@@ -46,8 +46,6 @@ const headers: Header[] = [
 ];
 
 const branches = setupRequired ? [] : await azure.getBranches();
-
-console.log(branches);
 </script>
 
 <template>

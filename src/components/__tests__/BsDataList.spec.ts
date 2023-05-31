@@ -15,9 +15,7 @@ describe("BsDataList", () => {
         });
 
         const input = wrapper.find("input#test");
-        const datalist = wrapper.find("datalist#testOptions");
 
         expect(input.exists()).toBe(true);
-        expect(datalist.exists()).toBe(true);
     });
 });

@@ -53,7 +53,7 @@ const headers: Header[] = [
     },
     {
         heading: "Merge Commit",
-        dataProperty: "lastMergeCommit.commitId"
+        formatFunc: (row) => ((row as Azure.PullRequest).lastMergeCommit ? row.lastMergeCommit.commitId : "")
     },
     {
         heading: "Tags",
@@ -71,7 +71,7 @@ const headers: Header[] = [
 ];
 
 const branches = ref<Azure.PullRequest[]>([]);
-const tag = ref<string>("");
+const tags = ref<string[]>([]);
 const tagList = ref<string[]>([]);
 
 const azureBranches = (setupRequired ? [] : await azure.getPullRequests()).sort((a, b) => (a.closedDate > b.closedDate ? -1 : 1));
@@ -84,15 +84,15 @@ tagList.value = azureBranches
     .distinct();
 
 let timeOut: number;
-watch(tag, (newTag) => {
+watch(tags, (newTags) => {
     if (timeOut) {
         clearTimeout(timeOut);
     }
 
     timeOut = window.setTimeout(async () => {
-        branches.value = !newTag ? azureBranches : azureBranches.filter((pr) => pr.labels && pr.labels.map((l) => l.name).includes(tag.value));
+        branches.value = !newTags.length ? azureBranches : azureBranches.filter((pr) => pr.labels && pr.labels.map((l) => l.name).intersect(newTags).length);
         await nextTick();
-    }, 1000);
+    }, 500);
 });
 
 const toasts = ref<ToastProps[]>([]);
@@ -135,12 +135,12 @@ const buttonGroup: ButtonGroupProps = {
 
     <div v-else>
         <div class="row">
-            <BsLabel input="tag" class="col-form-label col-1 offset-8">Tag</BsLabel>
-            <div class="col-3">
-                <BsDatalist input="tag" v-model="tag" :options="tagList" placeholder="Type to search tags"></BsDatalist>
+            <BsLabel input="tag" class="col-form-label col-1 offset-6">Tag</BsLabel>
+            <div class="col-5">
+                <BsDatalist input="tag" v-model="tags" :options="tagList" placeholder="Type to search tags"></BsDatalist>
             </div>
         </div>
-        <BsButtonGroup v-bind="buttonGroup"></BsButtonGroup>
+        <BsButtonGroup class="mt-3" v-bind="buttonGroup"></BsButtonGroup>
         <BsTable :headers="headers" :rows="branches"></BsTable>
         <BsToastsContainer :toasts="toasts"></BsToastsContainer>
     </div>

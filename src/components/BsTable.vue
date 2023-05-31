@@ -7,6 +7,7 @@ export interface Header {
     formatFunc?(row: any): string;
     linkTo?(row: any): string;
     linkText?(row: any): string;
+    linkTarget?: string;
 }
 
 defineProps<{
@@ -36,7 +37,7 @@ const getRowDataForHeader = (row: any, header: string): string | number | boolea
             <tr v-for="(row, i) in rows" v-bind:key="i">
                 <td v-for="(header, j) in headers" v-bind:key="`${i}-${j}`">
                     <template v-if="header.linkTo">
-                        <a :href="header.linkTo(row)">{{ header.linkText!(row) }}</a>
+                        <a :href="header.linkTo(row)" :target="header.linkTarget">{{ header.linkText!(row) }}</a>
                     </template>
                     <template v-else-if="header.formatFunc">
                         {{ header.formatFunc(row) }}

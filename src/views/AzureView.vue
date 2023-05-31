@@ -113,7 +113,7 @@ onMounted(() => {
         <div class="col-12">
             <BsLabel input="project">Project</BsLabel>
             <div class="input-group mb-3">
-                <BsDatalist input="project" v-model="project" :options="projects" placeholder="Type to search projects" :disabled="disableProjects"></BsDatalist>
+                <BsDatalist single input="project" v-model="project" :options="projects" placeholder="Type to search projects" :disabled="disableProjects"></BsDatalist>
                 <button
                     type="button"
                     class="btn btn-outline-secondary bi bi-arrow-clockwise"
@@ -128,7 +128,7 @@ onMounted(() => {
         <div class="col-12">
             <BsLabel input="repo">Repository</BsLabel>
             <div class="input-group mb-3">
-                <BsDatalist input="repo" v-model="repo" :options="repos" placeholder="Type to search repositories" :disabled="disableRepos"></BsDatalist>
+                <BsDatalist single input="repo" v-model="repo" :options="repos" placeholder="Type to search repositories" :disabled="disableRepos"></BsDatalist>
                 <button
                     type="button"
                     class="btn btn-outline-secondary bi bi-arrow-clockwise"
