@@ -1,6 +1,6 @@
 # Azure DevOps Helper
 
-[![Build Status](https://dev.azure.com/wjervis/DevOps/_apis/build/status%2FDocker?branchName=main)](https://dev.azure.com/wjervis/DevOps/_build/latest?definitionId=9&branchName=main)
+[![Validate Build](https://github.com/wjervis7/azure-devops/actions/workflows/validation.yaml/badge.svg?branch=main&event=pull_request)](https://github.com/wjervis7/azure-devops/actions/workflows/validation.yaml) | [![Publish Docker Images](https://github.com/wjervis7/azure-devops/actions/workflows/docker.yaml/badge.svg?branch=main)](https://github.com/wjervis7/azure-devops/actions/workflows/docker.yaml)
 
 Simple web app for viewing some basic Azure DevOps details.
 
