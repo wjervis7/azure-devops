@@ -2,30 +2,11 @@
 import router from "@/router";
 import { azureStore } from "@/stores/azure";
 import azure from "@/utilities/azure";
+import type { Azure } from "@/types/azure";
 import BsTable, { type Header } from "@/components/BsTable.vue";
 
 const store = azureStore();
-
-const setupRequired = (() => {
-    const missing = [];
-    if (!store.org) {
-        missing.push("organization");
-    }
-
-    if (!store.pat) {
-        missing.push("personal access token");
-    }
-
-    if (!store.project) {
-        missing.push("project");
-    }
-
-    if (!store.repo) {
-        missing.push("repository");
-    }
-
-    return missing.length ? `The following items need to be set: ${missing.join(",")}.` : null;
-})();
+const setupRequired = store.setupRequired();
 
 const headers: Header[] = [
     {

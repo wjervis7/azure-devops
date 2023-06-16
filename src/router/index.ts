@@ -20,14 +20,20 @@ const router = createRouter({
             component: () => import("@/views/BranchListView.vue")
         },
         {
-            path: "/pullrequests",
-            name: "pullrequests",
-            component: () => import("@/views/PrView.vue")
-        },
-        {
             path: "/branches/:name",
             name: "branch",
             component: () => import("@/views/BranchView.vue"),
+            props: true
+        },
+        {
+            path: "/pullrequests",
+            name: "pullrequests",
+            component: () => import("@/views/PrListView.vue")
+        },
+        {
+            path: "/pullrequests/:id",
+            name: "pullrequest",
+            component: () => import("@/views/PrView.vue"),
             props: true
         }
     ],

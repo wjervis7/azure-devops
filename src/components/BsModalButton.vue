@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { Modal } from "bootstrap";
+import { modalStore } from "@/stores/modal";
+
+const store = modalStore();
 
 const props = defineProps({
     target: {
@@ -8,14 +10,16 @@ const props = defineProps({
     }
 });
 
-let modal: Modal | null = null;
+const emits = defineEmits<{
+    click: [() => void];
+}>();
 
 const openModal = () => {
-    if (!modal) {
-        modal = new Modal(props.target);
-    }
+    emits("click", () => {
+        const modal = store.getModal(props.target);
 
-    modal.show();
+        modal.show();
+    });
 };
 </script>
 

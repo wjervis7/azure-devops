@@ -15,17 +15,18 @@ String.prototype.formatUnicorn = function (...args: any[]) {
     return str;
 };
 
-Array.prototype.distinct = function () {
-    const set = new Set(this);
+Array.prototype.distinct = function <T>(callbackFn: (a: T) => T | any = (a: T) => a) {
+    const set = new Set(this.map(callbackFn));
     return [...set];
 };
 
-Array.prototype.intersect = function <T>(otherArr: T[], callback: (a: T, b: T) => boolean = (a, b) => a === b) {
+Array.prototype.intersect = function <T>(otherArr: T[], callbackFn?: (a: T, b: T) => boolean): Array<T> {
+    callbackFn = callbackFn || ((a, b) => a === b);
     const firstArr = this;
     const intersectedItems: T[] = [];
     for (const a of firstArr) {
         for (const b of otherArr) {
-            if (callback(a, b)) {
+            if (callbackFn(a, b)) {
                 intersectedItems.push(b);
                 break;
             }
@@ -33,4 +34,14 @@ Array.prototype.intersect = function <T>(otherArr: T[], callback: (a: T, b: T) =
     }
 
     return intersectedItems;
+};
+
+Number.isNumber = (val: string | number | boolean): boolean => {
+    if (typeof val === "string" && !Number.isNaN(Number(val))) {
+        return true;
+    } else if (typeof val === "number") {
+        return true;
+    }
+
+    return false;
 };

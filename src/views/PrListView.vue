@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { nextTick, ref, watch } from "vue";
+import router from "@/router";
 import { DateTime } from "luxon";
 import { azureStore } from "@/stores/azure";
-import azure, { urls } from "@/utilities/azure";
+import azure from "@/utilities/azure";
 import git from "@/utilities/git";
+import { displayDate } from "@/utilities/dateTime";
 import type { Azure } from "@/types/azure";
 import BsTable, { type Header } from "@/components/BsTable.vue";
 import BsLabel from "@/components/BsLabel.vue";
@@ -13,45 +15,37 @@ import BsToastsContainer from "@/components/BsToastsContainer.vue";
 import type { ButtonGroupProps } from "@/components/BsButtonGroup.vue";
 import BsButtonGroup from "@/components/BsButtonGroup.vue";
 
-const props = defineProps<{
-    name: string;
-}>();
-
 const store = azureStore();
+
 const setupRequired = store.setupRequired();
-
-const branch = await azure.getBranch(props.name);
-const azurePullRequests = (await azure.getPullRequestsByTarget(branch!.name)).sort((a, b) => (a.closedDate > b.closedDate ? -1 : 1));
-
-const pullRequests = ref<Azure.PullRequest.PullRequest[]>([]);
-const tagList = ref<string[]>([]);
-
-const tag = ref<string>("");
 
 const headers: Header[] = [
     {
         heading: "PR Name",
         linkText: (row) => (row as Azure.PullRequest.PullRequest).title,
         linkTo: (row) =>
-            urls.pullRequest.formatUnicorn({
-                org: store.org,
-                project: store.project,
-                repo: store.repo,
-                id: (row as Azure.PullRequest.PullRequest).pullRequestId
-            }),
-        linkTarget: "_blank"
+            router.resolve({
+                name: "pullrequest",
+                params: {
+                    id: (row as Azure.PullRequest.PullRequest).pullRequestId
+                }
+            }).fullPath
     },
     {
         heading: "Date Completed",
-        formatFunc: (row) => DateTime.fromISO((row as Azure.PullRequest.PullRequest).closedDate).toLocaleString(DateTime.DATETIME_SHORT)
+        formatFunc: (row) => displayDate((row as Azure.PullRequest.PullRequest).closedDate)
     },
     {
         heading: "Author",
         dataProperty: "createdBy.displayName"
     },
     {
+        heading: "Target",
+        formatFunc: (row) => (row as Azure.PullRequest.PullRequest).targetRefName.split("/").pop() as string
+    },
+    {
         heading: "Merge Commit",
-        dataProperty: "lastMergeCommit.commitId"
+        formatFunc: (row) => ((row as Azure.PullRequest.PullRequest).lastMergeCommit ? row.lastMergeCommit.commitId : "")
     },
     {
         heading: "Tags",
@@ -68,19 +62,24 @@ const headers: Header[] = [
     }
 ];
 
+const pullRequests = ref<Azure.PullRequest.PullRequest[]>([]);
+const tags = ref<string[]>([]);
+const tagList = ref<string[]>([]);
+
+const azurePullRequests = (setupRequired ? [] : await azure.getPullRequests()).sort((a, b) => (a.closedDate > b.closedDate ? -1 : 1));
 pullRequests.value = azurePullRequests;
 tagList.value = azure.getTagsFromObject(azurePullRequests);
 
 let timeOut: number;
-watch(tag, (newTag) => {
+watch(tags, (newTags) => {
     if (timeOut) {
         clearTimeout(timeOut);
     }
 
     timeOut = window.setTimeout(async () => {
-        pullRequests.value = !newTag ? azurePullRequests : azurePullRequests.filter((pr) => pr.labels && pr.labels.map((l) => l.name).includes(tag.value));
+        pullRequests.value = !newTags.length ? azurePullRequests : azurePullRequests.filter((pr) => pr.labels && pr.labels.map((l) => l.name).intersect(newTags).length);
         await nextTick();
-    }, 1000);
+    }, 500);
 });
 
 const toasts = ref<ToastProps[]>([]);
@@ -91,7 +90,6 @@ const copyCommits = (asGitCommand = false) => {
     } else {
         git.copyCommitIds(pullRequests.value.map((pr) => pr.lastMergeCommit));
     }
-
     toasts.value.push({
         autohide: false,
         title: "Copied!",
@@ -118,18 +116,16 @@ const buttonGroup: ButtonGroupProps = {
         {{ setupRequired }}
         Go <RouterLink to="/azure">here</RouterLink>, to set these up.
     </div>
-    <template v-else-if="branch">
-        <h3>Branch {{ branch.name.replace("/refs/heads/", "") }}</h3>
-        <span>Created by {{ branch.creator.displayName }}</span>
-        <div class="row mb-3">
-            <BsLabel input="tag" class="col-form-label col-1 offset-8">Tag</BsLabel>
-            <div class="col-3">
-                <BsDatalist input="tag" v-model="tag" :options="tagList" placeholder="Type to search tags"></BsDatalist>
+
+    <div v-else>
+        <div class="row">
+            <BsLabel input="tag" class="col-form-label col-1 offset-6">Tag</BsLabel>
+            <div class="col-5">
+                <BsDatalist input="tag" v-model="tags" :options="tagList" placeholder="Type to search tags"></BsDatalist>
             </div>
         </div>
-        <BsButtonGroup v-bind="buttonGroup"></BsButtonGroup>
+        <BsButtonGroup class="mt-3" v-bind="buttonGroup"></BsButtonGroup>
         <BsTable :headers="headers" :rows="pullRequests"></BsTable>
         <BsToastsContainer :toasts="toasts"></BsToastsContainer>
-    </template>
-    <div v-else>Unable to get branch details :(</div>
+    </div>
 </template>

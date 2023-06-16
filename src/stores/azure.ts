@@ -34,6 +34,14 @@ const repoKey = encryptValue("azure:repo");
 const getLocalStorage = (storageKey: string) => decryptValue(localStorage.getItem(storageKey));
 const setLocalStorage = (storageKey: string, value: string) => localStorage.setItem(storageKey, encryptValue(value));
 
+export enum StoreValues {
+    pat = 1,
+    org = 2,
+    project = 4,
+    repo = 8,
+    all = pat | org | project | repo
+}
+
 export const azureStore = defineStore("azure", () => {
     const _pat = ref(getLocalStorage(patKey));
     const _org = ref(getLocalStorage(orgKey));
@@ -69,6 +77,27 @@ export const azureStore = defineStore("azure", () => {
         }
     });
 
+    const setupRequired = (valuesNeeded = StoreValues.all) => {
+        const missing = [];
+        if (valuesNeeded & StoreValues.org && !org.value) {
+            missing.push("organization");
+        }
+
+        if (valuesNeeded & StoreValues.pat && !pat.value) {
+            missing.push("personal access token");
+        }
+
+        if (valuesNeeded & StoreValues.project && !project.value) {
+            missing.push("project");
+        }
+
+        if (valuesNeeded & StoreValues.repo && !repo.value) {
+            missing.push("repository");
+        }
+
+        return missing.length ? `The following items need to be set: ${missing.join(",")}.` : null;
+    };
+
     const encodePat = (pat: string) => Base64.stringify(Utf8.parse(`:${pat}`));
 
     const clear = () => localStorage.clear();
@@ -79,6 +108,7 @@ export const azureStore = defineStore("azure", () => {
         project,
         repo,
         encodePat,
-        clear
+        clear,
+        setupRequired
     };
 });
