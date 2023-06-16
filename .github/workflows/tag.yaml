@@ -7,6 +7,9 @@ on:
 
 jobs:
   tag:
+    permissions:
+      contents: write
+      
     name: Bump Tag version
     runs-on: ubuntu-latest
     steps:
