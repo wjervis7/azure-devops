@@ -2,6 +2,8 @@
 name: Bump version
 
 on: 
+  pull_request:
+    branches: [main]
   push:
     branches: [main,dev]
 
@@ -15,6 +17,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          ssh-key: "${{ secrets.TAG_TOKEN }}"
 
       - name: Bump version and push tag
         id: tag
@@ -29,4 +33,4 @@ jobs:
         with:
           tag: ${{ steps.tag.outputs.new_tag }}
           name: Release ${{ steps.tag.outputs.new_tag }}
-          body: ${{ steps.tag.outputs.changelog }}
+          generateReleaseNotes: true
