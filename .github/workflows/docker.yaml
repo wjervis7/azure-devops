@@ -10,7 +10,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  PLATFORMS: linux/arm,linux/arm64,linux/amd64
+  PLATFORMS: linux/arm64,linux/amd64
 
 jobs:
   docker:
