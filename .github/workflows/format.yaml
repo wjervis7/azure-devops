@@ -7,7 +7,7 @@ on:
     
 jobs:
   format:
-    name: Validate Code Base
+    name: Format and Lint Code Base
     runs-on: ubuntu-latest
 
     steps:
