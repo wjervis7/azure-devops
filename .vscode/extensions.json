@@ -4,6 +4,7 @@
     "vue.vscode-typescript-vue-plugin",
     "firefox-devtools.vscode-firefox-debug",
     "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "github.vscode-github-actions"
   ]
 }
