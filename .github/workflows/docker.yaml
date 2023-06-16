@@ -6,6 +6,10 @@ on:
     branches: [main]
     tags:
       - 'v*'
+  release:
+    types:
+      - created
+      - edited
 
 env:
   REGISTRY: ghcr.io
