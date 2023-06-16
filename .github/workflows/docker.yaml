@@ -34,8 +34,8 @@ jobs:
       - name: Set Workflow vars
         id: vars
         run: |
-          echo ::set-output name=branch::${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
-          echo ::set-output name=nvmrc::$(cat .nvmrc | tr -cd [:digit:].)
+          echo "branch=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+          echo "nvmrc=$(cat .nvmrc | tr -cd [:digit:].)" >> $GITHUB_OUTPUT
 
       - name: Get labels from metadata
         id: metadata
