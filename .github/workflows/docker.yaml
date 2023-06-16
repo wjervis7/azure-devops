@@ -31,12 +31,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Get Branch
+        id: branch
+        run: echo ::set-output name=name::${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}          
+
       - name: Get labels from metadata
         id: metadata
         uses: docker/metadata-action@v4
         with: 
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            latest=false
           tags: |
+            type=raw,value=latest,enable=${{ steps.branch.outputs.name == 'main' }}
+            type=raw,value=beta,enable=${{ steps.branch.outputs.name == 'dev' }}
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
