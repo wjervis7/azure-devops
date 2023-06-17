@@ -6,10 +6,6 @@ on:
     branches: 
       - main
       - dev
-    tags:
-      - 'v*'
-  pull_request:
-    branches: [main]
 
 env:
   REGISTRY: ghcr.io
@@ -34,7 +30,6 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }} 
-          default_bump: minor
           pre_release_branches: dev
 
       - name: Create GitHub Release
@@ -72,11 +67,6 @@ jobs:
           echo "version_patch=$(echo $version | cut -d '.' -f 1,2,3)" >> $GITHUB_OUTPUT
           echo "version_minor=$(echo $version | cut -d '.' -f 1,2)" >> $GITHUB_OUTPUT
           echo "version_major=$(echo $version | cut -d '.' -f 1)" >> $GITHUB_OUTPUT
-          echo "branch=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}"
-          echo "nvmrc=$(cat .nvmrc | tr -cd [:digit:].)"
-          echo "version_patch=$(echo $version | cut -d '.' -f 1,2,3)" 
-          echo "version_minor=$(echo $version | cut -d '.' -f 1,2)" 
-          echo "version_major=$(echo $version | cut -d '.' -f 1)" 
 
       - name: Get labels from metadata
         id: metadata
@@ -88,9 +78,12 @@ jobs:
           tags: |
             type=raw,value=latest,enable=${{ steps.vars.outputs.branch == 'main' }}
             type=raw,value=beta,enable=${{ steps.vars.outputs.branch == 'dev' }}
-            type=raw,value=${{ steps.vars.outputs.version_major}}
-            type=raw,value=${{ steps.vars.outputs.version_minor}}
-            type=raw,value=${{ steps.vars.outputs.version_patch}}
+            type=raw,value=v${{ steps.vars.outputs.version_major}},enable=${{ steps.vars.outputs.branch == 'main' }}
+            type=raw,value=v${{ steps.vars.outputs.version_minor}},enable=${{ steps.vars.outputs.branch == 'main' }}
+            type=raw,value=v${{ steps.vars.outputs.version_patch}},enable=${{ steps.vars.outputs.branch == 'main' }}
+            type=raw,value=v${{ steps.vars.outputs.version_major}}-beta,enable=${{ steps.vars.outputs.branch == 'dev' }}
+            type=raw,value=v${{ steps.vars.outputs.version_minor}}-beta,enable=${{ steps.vars.outputs.branch == 'dev' }}
+            type=raw,value=v${{ steps.vars.outputs.version_patch}}-beta,enable=${{ steps.vars.outputs.branch == 'dev' }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
