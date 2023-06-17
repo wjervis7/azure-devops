@@ -68,7 +68,7 @@ jobs:
         run: |
           echo "branch=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
           echo "nvmrc=$(cat .nvmrc | tr -cd [:digit:].)" >> $GITHUB_OUTPUT
-          echo "version=$(echo '${{ needs.tag.outputs.version }}' | tr -cd [:digit:]."
+          echo "version=$(echo ${{ needs.tag.outputs.version }} | tr -cd [:digit:]."
           echo "version_patch=$(echo $version | cut -d '.' -f 1,2,3)" >> $GITHUB_OUTPUT
           echo "version_minor=$(echo $version | cut -d '.' -f 1,2)" >> $GITHUB_OUTPUT
           echo "version_major=$(echo $version | cut -d '.' -f 1)" >> $GITHUB_OUTPUT
