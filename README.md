@@ -11,7 +11,7 @@ Can search PR's by tags.
 Simplest way is to use Docker:
 
 ```sh
-docker pull devops-helper:latest
+docker pull ghcr.io/wjervis7/azure-devops:latest
 
 docker run -p {port}:80 devops-helper
 ```
