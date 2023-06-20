@@ -1,6 +1,10 @@
 # Azure DevOps Helper
 
-[![Validate Build](https://github.com/wjervis7/azure-devops/actions/workflows/validation.yaml/badge.svg)](https://github.com/wjervis7/azure-devops/actions/workflows/validation.yaml) | [![Publish Docker Images](https://github.com/wjervis7/azure-devops/actions/workflows/docker.yaml/badge.svg?branch=main)](https://github.com/wjervis7/azure-devops/actions/workflows/docker.yaml)
+| Build | Docker | Statements | Branches | Functions | Lines |
+| --- | --- | --- | --- | --- | --- |
+| [![Validate Build][buildImg]][buildLnk] | [![Publish Docker Images][dockerImg]][dockerLnk] | ![Statements](#statements#) | ![Branches](#branches#) | ![Functions](#functions#) | ![Lines](#lines#) |
+
+| [![Publish Docker Images]()]()
 
 Simple web app for viewing some basic Azure DevOps details.
 
@@ -66,3 +70,9 @@ npm run test:unit
 ```sh
 npm run lint
 ```
+
+##
+[buildImg]: https://github.com/wjervis7/azure-devops/actions/workflows/validation.yaml/badge.svg?branch=main
+[buildLnk]: https://github.com/wjervis7/azure-devops/actions/workflows/validation.yaml
+[dockerImg]: https://github.com/wjervis7/azure-devops/actions/workflows/docker.yaml/badge.svg?branch=main
+[dockerLnk]: https://github.com/wjervis7/azure-devops/actions/workflows/docker.yaml

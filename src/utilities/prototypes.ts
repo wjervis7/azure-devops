@@ -20,20 +20,19 @@ Array.prototype.distinct = function <T>(callbackFn: (a: T) => T | any = (a: T) =
     return [...set];
 };
 
-Array.prototype.intersect = function <T>(otherArr: T[], callbackFn?: (a: T, b: T) => boolean): Array<T> {
-    callbackFn = callbackFn || ((a, b) => a === b);
+Array.prototype.intersect = function <T>(otherArr: T[]): Array<T> {
     const firstArr = this;
-    const intersectedItems: T[] = [];
+    const intersectedItems = new Set<T>();
     for (const a of firstArr) {
         for (const b of otherArr) {
-            if (callbackFn(a, b)) {
-                intersectedItems.push(b);
+            if (a === b) {
+                intersectedItems.add(b);
                 break;
             }
         }
     }
 
-    return intersectedItems;
+    return [...intersectedItems];
 };
 
 Number.isNumber = (val: string | number | boolean): boolean => {
