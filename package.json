@@ -13,7 +13,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --ignore-path .gitignore",
     "lint:fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
-    "make-badges": "istanbul-badges-readme -- --ci"
+    "make-badges": "istanbul-badges-readme"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
