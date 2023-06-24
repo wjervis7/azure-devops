@@ -31,7 +31,7 @@ jobs:
         run: npm run format
 
       - name: Commit and Push changes
-        uses: wjervis7/git-commit-push@v1-beta
+        uses: wjervis7/git-commit-push@v1-beta2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           commit_message: "Formatted and linted code"
