@@ -13,6 +13,10 @@ export default mergeConfig(
       transformMode: {
         web: [/\.[jt]sx$/],
       },
+      coverage: {
+        provider: "istanbul",
+        reporter: ["lcov", "json-summary"]
+      }
     }
   })
 )

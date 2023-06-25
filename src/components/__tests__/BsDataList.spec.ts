@@ -5,8 +5,7 @@ import BsDataList from "../BsDatalist.vue";
 
 describe("BsDataList", () => {
     it("renders properly", () => {
-        const wrapper = mount(BsDataList, {
-            props: {
+        const wrapper = mount(BsDataList, {            props: {
                 input: "test",
                 placeholder: "test",
                 modelValue: "test",
@@ -16,6 +15,6 @@ describe("BsDataList", () => {
 
         const input = wrapper.find("input#test");
 
-        expect(input.exists()).toBe(true);
+                    expect(input.exists()).toBe(true);
     });
 });

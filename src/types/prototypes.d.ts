@@ -21,13 +21,11 @@ interface Array<T> {
     distinct(callbackFn?: (a: T) => any): Array;
 
     /**
-     * Returns a new array with items that meet the criteria in the callback method.
+     * Returns a new array with items that are in both arrays.
      * @param {Array<T>} otherArr other array to compare items with.
-     * @param {Function} callbackFn callback method used to compare the items in the two arrays.
-     *  If not provided, simply checks if items are strictly equal to each other.
-     * @returns {Array<T>} new array with items that meet criteria from callback method.
+     * @returns {Array<T>} new array with items that are in both arrays.
      */
-    intersect(otherArr: Array<T>, callbackFn?: (a: T, b: T) => boolean): Array<T>;
+    intersect(otherArr: Array<T>): Array<T>;
 
     /**
      * Returns an object, grouping the items of this array using the provided callback function.

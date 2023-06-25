@@ -7,6 +7,9 @@ on:
       - main
       - dev
 
+permissions:
+  contents: write
+
 jobs:
   format:
     name: Format and Lint Code Base
@@ -15,6 +18,9 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
 
       - name: Use Node.js
         uses: actions/setup-node@v3
@@ -30,18 +36,11 @@ jobs:
       - name: Format code
         run: npm run format
 
-      - name: Check for code changes
-        id: git_check
-        run: echo "modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)" >> $GITHUB_OUTPUT
-
-      - name: Checkin changes
-        if: steps.git_check.outputs.modified == 'true'
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add .
-          git commit -am "Formatted and linted code"
-          git push
+      - name: Commit and Push changes
+        uses: wjervis7/git-commit-push@v1-beta7
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          commit_message: "Formatted and linted code"
 
   build:
     name: Validate Code Base
@@ -68,3 +67,9 @@ jobs:
       
       - name: Run Unit Tests
         run: npm run test:unit
+
+      - name: Get Code Coverage
+        run: npm run test:coverage
+
+      - name: Update CC badges
+        run: npm run make-badges
