@@ -72,4 +72,4 @@ npm run lint
 [buildLnk]: https://github.com/wjervis7/azure-devops/actions/workflows/validation.yaml
 [dockerImg]: https://github.com/wjervis7/azure-devops/actions/workflows/docker.yaml/badge.svg?branch=main
 [dockerLnk]: https://github.com/wjervis7/azure-devops/actions/workflows/docker.yaml
-[testImg]: https://gist.githubusercontent.com/wjervis7/8273a53932b38d5ff3a2870c1ca30059/raw/a7a2189761c14752af3a1feeb2594efa005c807a/badge.svg
+[testImg]: https://gist.githubusercontent.com/wjervis7/8273a53932b38d5ff3a2870c1ca30059/raw/badge.svg

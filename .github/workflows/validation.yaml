@@ -86,7 +86,7 @@ jobs:
         if: always()
         with:
           files: |
-            ./coverage/coverage-final.json
+            ./coverage/coverage-summary.json
 
       - name: Set badge color
         run: |
