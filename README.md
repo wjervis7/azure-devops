@@ -2,7 +2,7 @@
 
 | Build | Docker | Statements | Branches | Functions | Lines |
 | --- | --- | --- | --- | --- | --- |
-| [![Validate Build][buildImg]][buildLnk] | [![Publish Docker Images][dockerImg]][dockerLnk] | ![Statements](#statements#) | ![Branches](#branches#) | ![Functions](#functions#) | ![Lines](#lines#) |
+| [![Validate Build][buildImg]][buildLnk] | [![Publish Docker Images][dockerImg]][dockerLnk] | ![Statements](https://img.shields.io/badge/statements-75%25-red.svg?style=flat) | ![Branches](https://img.shields.io/badge/branches-62.96%25-red.svg?style=flat) | ![Functions](https://img.shields.io/badge/functions-66.66%25-red.svg?style=flat) | ![Lines](https://img.shields.io/badge/lines-75.47%25-red.svg?style=flat) |
 
 | [![Publish Docker Images]()]()
 
