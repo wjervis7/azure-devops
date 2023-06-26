@@ -43,7 +43,7 @@ jobs:
             git config user.name github-actions
             git config user.email github-actions@github.com
             git add .
-            git commit -m "Code formatting"
+            git commit --amend -m "Code formatting"
             git push
   build:
     name: Validate Code Base
@@ -90,5 +90,5 @@ jobs:
             git config user.name github-actions
             git config user.email github-actions@github.com
             git add .
-            git commit -m "Badge Updates"
+            git commit --amend -m "Badge Updates"
             git push
