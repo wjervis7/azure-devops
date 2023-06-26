@@ -5,6 +5,7 @@ on:
   push:
     branches: 
       - main
+      - master
       - dev
 
 env:
@@ -45,7 +46,7 @@ jobs:
           tag: ${{ steps.tag.outputs.new_tag }}
           name: Release ${{ steps.tag.outputs.new_tag }}
           generateReleaseNotes: true
-          makeLatest: ${{ steps.branch.outputs.branch == 'main' }}
+          makeLatest: ${{ steps.branch.outputs.branch != 'dev' }}
           prerelease: ${{ steps.branch.outputs.branch == 'dev' }}
 
   docker:
@@ -84,11 +85,11 @@ jobs:
           flavor: |
             latest=false
           tags: |
-            type=raw,value=latest,enable=${{ needs.tag.outputs.branch == 'main' }}
+            type=raw,value=latest,enable=${{ needs.tag.outputs.branch != 'dev' }}
             type=raw,value=beta,enable=${{ needs.tag.outputs.branch == 'dev' }}
-            type=raw,value=v${{ steps.vars.outputs.version_major}},enable=${{ needs.tag.outputs.branch == 'main' }}
-            type=raw,value=v${{ steps.vars.outputs.version_minor}},enable=${{ needs.tag.outputs.branch == 'main' }}
-            type=raw,value=v${{ steps.vars.outputs.version_patch}},enable=${{ needs.tag.outputs.branch == 'main' }}
+            type=raw,value=v${{ steps.vars.outputs.version_major}},enable=${{ needs.tag.outputs.branch != 'dev' }}
+            type=raw,value=v${{ steps.vars.outputs.version_minor}},enable=${{ needs.tag.outputs.branch != 'dev' }}
+            type=raw,value=v${{ steps.vars.outputs.version_patch}},enable=${{ needs.tag.outputs.branch != 'dev' }}
             type=raw,value=v${{ steps.vars.outputs.version_major}}-beta,enable=${{ needs.tag.outputs.branch == 'dev' }}
             type=raw,value=v${{ steps.vars.outputs.version_minor}}-beta,enable=${{ needs.tag.outputs.branch == 'dev' }}
             type=raw,value=v${{ steps.vars.outputs.version_patch}}-beta,enable=${{ needs.tag.outputs.branch == 'dev' }}

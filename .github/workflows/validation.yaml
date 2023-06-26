@@ -5,10 +5,13 @@ on:
   pull_request:
     branches:
       - main
+      - master
       - dev
 
 permissions:
   contents: write
+  checks: write
+  pull-requests: write
 
 jobs:
   format:
@@ -18,9 +21,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: ${{ github.head_ref }}
 
       - name: Use Node.js
         uses: actions/setup-node@v3
@@ -43,7 +43,7 @@ jobs:
             git config user.name github-actions
             git config user.email github-actions@github.com
             git add .
-            git commit --amend -m "Code formatting"
+            git commit --amend -am "Code formatting"
             git push
   build:
     name: Validate Code Base
@@ -77,18 +77,40 @@ jobs:
       - name: Get Code Coverage
         run: npm run test:coverage
 
-      - name: Update CC badges
-        run: npm run make-badges
+      - name: Publish Test Results
+        id: test_results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
 
-      - name: Check for code changes
-        id: git_check
-        run: echo "modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)" >> $GITHUB_OUTPUT
-  
-      - name: Commit and Push changes
-        if: ${{ steps.git_check.outputs.modified == 'true' }}
+      - name: Set badge color
         run: |
-            git config user.name github-actions
-            git config user.email github-actions@github.com
-            git add .
-            git commit --amend -m "Badge Updates"
-            git push
+          case ${{ fromJSON( steps.test_results.outputs.json ).conclusion }} in
+            success)
+              echo "BADGE_COLOR=31c653" >> $GITHUB_ENV
+              ;;
+            failure)
+              echo "BADGE_COLOR=800000" >> $GITHUB_ENV
+              ;;
+            neutral)
+              echo "BADGE_COLOR=696969" >> $GITHUB_ENV
+              ;;
+          esac
+
+      - name: Create badge
+        uses: emibcn/badge-action@d6f51ff11b5c3382b3b88689ae2d6db22d9737d1
+        with:
+          label: Tests
+          status: '${{ fromJSON( steps.test_results.outputs.json ).formatted.stats.tests }} tests, ${{ fromJSON( steps.test_results.outputs.json ).formatted.stats.runs }} runs: ${{ fromJSON( steps.test_results.outputs.json ).conclusion }}'
+          color: ${{ env.BADGE_COLOR }}
+          path: badge.svg
+      
+      - name: Upload badge to Gist
+        if: >
+          github.ref == 'refs/heads/master'
+        uses: andymckay/append-gist-action@1fbfbbce708a39bd45846f0955ed5521f2099c6d
+        with:
+          token: ${{ secrets.GIST_TOKEN }}
+          gistURL: https://gist.github.com/wjervis7/8273a53932b38d5ff3a2870c1ca30059
+          file: badge.svg
