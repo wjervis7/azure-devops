@@ -10,7 +10,8 @@ required_labels_mode: one_of
 
 blacklisted_labels: []
 
-apply_labels: []
+apply_labels: 
+  - automerged
 
 auto_squash_merge_labels:
   - dependencies
