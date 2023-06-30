@@ -11,9 +11,8 @@ permissions:
 jobs:
   autoapproval:
     runs-on: ubuntu-latest
-    name: Auto Approval
+    name: Auto Approval Bot
     steps:
       - uses: dkhmelenko/autoapproval@v1.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
