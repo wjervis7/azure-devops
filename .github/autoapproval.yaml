@@ -1,5 +1,7 @@
+_extends: github-settings
+
 from_owner:
-  - dependabot
+  - dependabot[bot]
   - wjervis7
 
 required_labels:
@@ -8,10 +10,9 @@ required_labels:
 
 required_labels_mode: one_of
 
-blacklisted_labels: []
+blacklisted_labels:
+  - wip
 
-apply_labels: []
-
-auto_squash_merge_labels:
-  - dependencies
-  - ready
+apply_labels:
+  - merge
+  
