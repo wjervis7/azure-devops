@@ -2,119 +2,78 @@
 name: Validate Build
 
 on:
-  pull_request:
-    branches:
-      - main
-      - master
-      - dev
+    pull_request:
+        branches:
+            - main
+            - master
+            - dev
 
 permissions:
-  contents: write
-  checks: write
-  pull-requests: write
+    contents: write
+    checks: write
+    pull-requests: write
 
 jobs:
-  format:
-    name: Format Code Base
-    runs-on: ubuntu-latest
+    format:
+        name: Format Code Base
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: ${{ github.head_ref }}
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+                  ref: ${{ github.head_ref }}
 
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.nvmrc'
+            - name: Use Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version-file: ".nvmrc"
 
-      - name: Install dependencies
-        run: npm ci
+            - name: Install dependencies
+              run: npm ci
 
-      - name: Format code
-        run: npm run format
+            - name: Format code
+              run: npm run format
+    build:
+        name: Validate Code Base
+        runs-on: ubuntu-latest
+        needs: format
 
-      - name: Check for code changes
-        id: git_check
-        run: echo "modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)" >> $GITHUB_OUTPUT
-  
-      # - name: Commit and Push changes
-      #   if: ${{ steps.git_check.outputs.modified == 'true' }}
-      #   run: |
-      #       git config user.name github-actions
-      #       git config user.email github-actions@github.com
-      #       git add .
-      #       git commit --amend -am "Code formatting"
-      #       git push
-  build:
-    name: Validate Code Base
-    runs-on: ubuntu-latest
-    needs: format
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+                  ref: ${{ github.head_ref }}
 
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: ${{ github.head_ref }}
+            - name: Use Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version-file: ".nvmrc"
 
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: '.nvmrc'
+            - name: Install dependencies
+              run: npm ci
 
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Lint code
-        run: npm run lint
-      
-      - name: Build code
-        run: npm run build
-      
-      - name: Run Unit Tests
-        run: npm run test:unit
+            - name: Lint code
+              run: npm run lint
 
-      - name: Get Code Coverage
-        run: npm run test:coverage
+            - name: Build code
+              run: npm run build
 
-      - name: Publish Test Results
-        id: test_results
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          files: |
-            ./coverage/coverage-summary.json
+            - name: Run Unit Tests
+              run: npm run test:unit
 
-      - name: Set badge color
-        run: |
-          case ${{ fromJSON( steps.test_results.outputs.json ).conclusion }} in
-            success)
-              echo "BADGE_COLOR=31c653" >> $GITHUB_ENV
-              ;;
-            failure)
-              echo "BADGE_COLOR=800000" >> $GITHUB_ENV
-              ;;
-            neutral)
-              echo "BADGE_COLOR=696969" >> $GITHUB_ENV
-              ;;
-          esac
+            - name: Get Code Coverage
+              run: npm run test:coverage
 
-      - name: Create badge
-        uses: emibcn/badge-action@d6f51ff11b5c3382b3b88689ae2d6db22d9737d1
-        with:
-          label: Tests
-          status: '${{ fromJSON( steps.test_results.outputs.json ).formatted.stats.tests }} tests, ${{ fromJSON( steps.test_results.outputs.json ).formatted.stats.runs }} runs: ${{ fromJSON( steps.test_results.outputs.json ).conclusion }}'
-          color: ${{ env.BADGE_COLOR }}
-          path: badge.svg
-      
-      - name: Upload badge to Gist
-        # if: >
-        #   github.ref == 'refs/heads/master'
-        uses: andymckay/append-gist-action@1fbfbbce708a39bd45846f0955ed5521f2099c6d
-        with:
-          token: ${{ secrets.GIST_TOKEN }}
-          gistURL: https://gist.github.com/wjervis7/8273a53932b38d5ff3a2870c1ca30059
-          file: badge.svg
+            - name: Publish Results
+              uses: davelosert/vitest-coverage-report-action@v2
+              if: always()
+
+            - name: Publish Results Badge
+              uses: wjervis7/vitest-badge-action@v0.1-beta
+              with:
+                  result-type: lines
+                  gist-token: ${{ secrets.GIST_TOKEN }}
+                  gist-url: https://gist.github.com/wjervis7/8273a53932b38d5ff3a2870c1ca30059
