@@ -72,7 +72,7 @@ jobs:
               if: always()
             # change needed for commit
             - name: Publish Results Badge
-              uses: wjervis7/vitest-badge-action@v0.1-beta
+              uses: wjervis7/vitest-badge-action@v0.2-beta
               with:
                   result-type: lines
                   gist-token: ${{ secrets.GIST_TOKEN }}
