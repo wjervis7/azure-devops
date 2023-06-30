@@ -1,18 +1,17 @@
-on:
+name: Auto approve
+
+on:   
   pull_request:
     types: [opened, reopened, labeled, edited]
   pull_request_review:
     types: [dismissed]
 
-permissions:
-  contents: read
-  pull-requests: write
-
 jobs:
-  autoapproval:
+  approve:
     runs-on: ubuntu-latest
-    name: Auto Approval Bot
+    if: github.actor == 'dependabot[bot]' || github.actor == github.repository_owner
+    permissions:
+      pull-requests: write
+
     steps:
-      - uses: dkhmelenko/autoapproval@v1.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: hmarr/auto-approve-action@v3
