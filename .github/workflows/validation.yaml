@@ -72,7 +72,7 @@ jobs:
               if: always()
 
             - name: Publish Results Badge
-              uses: wjervis7/vitest-badge-action@v0.9-beta
+              uses: wjervis7/vitest-badge-action@v0.10-beta
               if: always()
               with:
                   result-type: lines
