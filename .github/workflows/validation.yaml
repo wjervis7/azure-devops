@@ -40,7 +40,7 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-        
+
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
@@ -95,7 +95,7 @@ jobs:
           result-type: lines
           gist-token: ${{ secrets.GIST_TOKEN }}
           gist-url: https://gist.github.com/wjervis7/8273a53932b38d5ff3a2870c1ca30059
-          badge-path: badges-lines.svg
+          badge-path: badge-lines.svg
           badge-text: Coverage (Lines)
 
       - name: Publish Results Badge
@@ -105,7 +105,7 @@ jobs:
           result-type: statements
           gist-token: ${{ secrets.GIST_TOKEN }}
           gist-url: https://gist.github.com/wjervis7/8273a53932b38d5ff3a2870c1ca30059
-          badge-path: badges-statements.svg
+          badge-path: badge-statements.svg
           badge-text: Coverage (Statements)
 
       - name: Publish Results Badge
@@ -115,7 +115,7 @@ jobs:
           result-type: functions
           gist-token: ${{ secrets.GIST_TOKEN }}
           gist-url: https://gist.github.com/wjervis7/8273a53932b38d5ff3a2870c1ca30059
-          badge-path: badges-functions.svg
+          badge-path: badge-functions.svg
           badge-text: Coverage (Functions)
 
       - name: Publish Results Badge
@@ -125,5 +125,5 @@ jobs:
           result-type: branches
           gist-token: ${{ secrets.GIST_TOKEN }}
           gist-url: https://gist.github.com/wjervis7/8273a53932b38d5ff3a2870c1ca30059
-          badge-path: badges-branches.svg
+          badge-path: badge-branches.svg
           badge-text: Coverage (Branches)
