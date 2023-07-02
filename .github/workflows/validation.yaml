@@ -2,79 +2,128 @@
 name: Validate Build
 
 on:
-    pull_request:
-        branches:
-            - main
-            - master
-            - dev
+  pull_request:
+    branches:
+      - main
+      - master
+      - dev
 
 permissions:
-    contents: write
-    checks: write
-    pull-requests: write
+  contents: write
+  checks: write
+  pull-requests: write
 
 jobs:
-    format:
-        name: Format Code Base
-        runs-on: ubuntu-latest
+  format:
+    name: Format Code Base
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout Code
-              uses: actions/checkout@v3
-              with:
-                  fetch-depth: 0
-                  ref: ${{ github.head_ref }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-            - name: Use Node.js
-              uses: actions/setup-node@v3
-              with:
-                  node-version-file: ".nvmrc"
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
 
-            - name: Install dependencies
-              run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-            - name: Format code
-              run: npm run format
-    build:
-        name: Validate Code Base
-        runs-on: ubuntu-latest
-        needs: format
+      - name: Format code
+        run: npm run format
 
-        steps:
-            - name: Checkout Code
-              uses: actions/checkout@v3
-              with:
-                  fetch-depth: 0
-                  ref: ${{ github.head_ref }}
+  lint:
+    name: Lint Code Base
+    runs-on: ubuntu-latest
 
-            - name: Use Node.js
-              uses: actions/setup-node@v3
-              with:
-                  node-version-file: ".nvmrc"
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
 
-            - name: Install dependencies
-              run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-            - name: Lint code
-              run: npm run lint
+      - name: Lint code
+        run: npm run lint
 
-            - name: Build code
-              run: npm run build
 
-            - name: Run Unit Tests
-              run: npm run test:unit
+  build:
+    name: Validate Code Base
+    runs-on: ubuntu-latest
+    needs: 
+      - format
+      - lint
 
-            - name: Get Code Coverage
-              run: npm run test:coverage
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
 
-            - name: Publish Results
-              uses: davelosert/vitest-coverage-report-action@v2
-              if: always()
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
 
-            - name: Publish Results Badge
-              uses: wjervis7/vitest-badge-action@v0.12-beta
-              if: always()
-              with:
-                  result-type: lines
-                  gist-token: ${{ secrets.GIST_TOKEN }}
-                  gist-url: https://gist.github.com/wjervis7/8273a53932b38d5ff3a2870c1ca30059
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build code
+        run: npm run build
+
+      - name: Run Unit Tests
+        run: npm run test:unit
+
+      - name: Get Code Coverage
+        run: npm run test:coverage
+
+      - name: Publish Results
+        uses: davelosert/vitest-coverage-report-action@v2
+        if: always()
+
+      - name: Publish Results Badge
+        uses: wjervis7/vitest-badge-action@v0.12-beta
+        if: always()
+        with:
+          result-type: lines
+          gist-token: ${{ secrets.GIST_TOKEN }}
+          gist-url: https://gist.github.com/wjervis7/8273a53932b38d5ff3a2870c1ca30059
+          badge-path: badges-lines.svg
+          badge-text: Coverage (Lines)
+
+      - name: Publish Results Badge
+        uses: wjervis7/vitest-badge-action@v0.12-beta
+        if: always()
+        with:
+          result-type: statements
+          gist-token: ${{ secrets.GIST_TOKEN }}
+          gist-url: https://gist.github.com/wjervis7/8273a53932b38d5ff3a2870c1ca30059
+          badge-path: badges-statements.svg
+          badge-text: Coverage (Statements)
+
+      - name: Publish Results Badge
+        uses: wjervis7/vitest-badge-action@v0.12-beta
+        if: always()
+        with:
+          result-type: functions
+          gist-token: ${{ secrets.GIST_TOKEN }}
+          gist-url: https://gist.github.com/wjervis7/8273a53932b38d5ff3a2870c1ca30059
+          badge-path: badges-functions.svg
+          badge-text: Coverage (Functions)
+
+      - name: Publish Results Badge
+        uses: wjervis7/vitest-badge-action@v0.12-beta
+        if: always()
+        with:
+          result-type: branches
+          gist-token: ${{ secrets.GIST_TOKEN }}
+          gist-url: https://gist.github.com/wjervis7/8273a53932b38d5ff3a2870c1ca30059
+          badge-path: badges-branches.svg
+          badge-text: Coverage (Branches)
