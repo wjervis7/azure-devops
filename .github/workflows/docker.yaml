@@ -24,7 +24,7 @@ jobs:
       branch: ${{ steps.branch.outputs.branch }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get Branch
         id: branch
@@ -58,7 +58,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Login to GHCR
         uses: docker/login-action@v2
